@@ -24,12 +24,23 @@ const BookList = () => {
     getAllBooks();
   }, []);
 
+  const deleteBook = (e, id) => {
+    e.preventDefault();
+    BookService.deleteBook(id).then((response) => {
+      if (books) {
+        setBooks((prevBook) => {
+          return prevBook.filter((book) => book.id !== id);
+        });
+      }
+    });
+  };
+
   return (
     <div className="container mx-auto my-8">
       <div className="h-12">
         <button
           onClick={() => nav('/addBook')}
-          className="rounded bg-blue-700 text-white px-6 py-2 font-semibold"
+          className="rounded bg-blue-500 hover:bg-blue-700 text-white px-6 py-2 font-semibold shadow border-b-2"
         >
           Add New Book
         </button>
@@ -61,15 +72,20 @@ const BookList = () => {
               </th>
             </tr>
           </thead>
-          {!loading && (
+          {!loading && books && (
             <tbody className="bg-white">
               {books.map((book) => (
-                <Book book={book} key={book.id}></Book>
+                <Book book={book} key={book.id} deleteBook={deleteBook}></Book>
               ))}
             </tbody>
           )}
         </table>
       </div>
+      {!books && (
+        <div className="text-center font-medium text-gray-500 uppercase tracking-wider py-5 px-6">
+          <p> No book found.</p>
+        </div>
+      )}
     </div>
   );
 };

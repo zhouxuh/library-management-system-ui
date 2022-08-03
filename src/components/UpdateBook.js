@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import BookService from '../services/BookService';
 
-const AddBook = () => {
+const UpdateBook = () => {
+  const { id } = useParams();
   const [book, setBook] = useState({
-    id: '',
+    id: id,
     isbn: '',
     name: '',
     author: '',
@@ -20,40 +21,39 @@ const AddBook = () => {
     setBook({ ...book, [e.target.name]: value });
   };
 
-  const saveBook = (e) => {
+  useEffect(() => {
+    const fetchBookById = async () => {
+      try {
+        const response = await BookService.getBookById(id);
+        setBook(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchBookById();
+  }, [id]);
+
+  const updateBook = (e) => {
     e.preventDefault();
-    BookService.saveBook(book)
+    BookService.updateBook(book, id)
       .then((response) => {
-        if (response.status === 201) {
-          alert('Added book successfully.');
+        if (response.status === 200) {
+          alert('Updated book successfully.');
         }
         console.log(response);
         nav('/bookList');
       })
       .catch((error) => {
         alert(error.response.data);
-        console.log(error.response.data);
+        console.log(error);
       });
-  };
-
-  const reset = (e) => {
-    e.preventDefault();
-    setBook({
-      id: '',
-      isbn: '',
-      name: '',
-      author: '',
-      quantity: '',
-      price: '',
-      date: '',
-    });
   };
 
   return (
     <div className="max-w-xl mx-auto shadow border-b py-4">
       <div className="grid place-content-center py-4">
         <div className="font-bold text-2xl tracking-wider py-4">
-          <h1>Add New Book</h1>
+          <h1>Update Book</h1>
         </div>
 
         <div className="items-center justify-center h-14 w-full my-4">
@@ -132,22 +132,15 @@ const AddBook = () => {
 
         <div className="flex item-center justify-center h-14 w-full my-4 space-x-4 pt-4">
           <button
-            onClick={saveBook}
+            onClick={updateBook}
             className="rounded text-white font-semibold bg-blue-400
-            hover:bg-blue-700 px-6 py-2 shadow border-b-2"
+        hover:bg-blue-700 px-6 py-2 shadow border-b-2"
           >
-            Save
-          </button>
-          <button
-            onClick={reset}
-            className="rounded text-white font-semibold bg-red-400
-            hover:bg-red-700 px-6 py-2 shadow border-b-2"
-          >
-            Clear
+            Update
           </button>
           <button
             onClick={() => nav('/bookList')}
-            className="rounded text-white font-semibold bg-gray-400 hover:bg-gray-700 px-5 py-2 shadow border-b-2"
+            className="rounded text-white font-semibold bg-gray-400 hover:bg-gray-700 px-6 py-2 shadow border-b-2"
           >
             Cancel
           </button>
@@ -157,4 +150,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default UpdateBook;

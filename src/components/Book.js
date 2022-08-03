@@ -1,35 +1,50 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Book = ({ book }) => {
+const Book = ({ book, deleteBook }) => {
+  const nav = useNavigate();
+  const editBook = (e, id) => {
+    e.preventDefault();
+    nav(`/updateBook/${id}`);
+  };
+
   return (
     <tr key={book.id}>
       <td className="text-center px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{book.name}</div>
+        <div className="text-lg text-gray-500">{book.name}</div>
       </td>
       <td className="text-center px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{book.isbn}</div>
+        <div className="text-lg text-gray-500">{book.isbn}</div>
       </td>
       <td className="text-center px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{book.author}</div>
+        <div className="text-lg text-gray-500">{book.author}</div>
       </td>
       <td className="text-center px-6 py-4 whitespace-nowrap text-">
-        <div className="text-sm text-gray-500">{book.quantity}</div>
+        <div className="text-lg text-gray-500">{book.quantity}</div>
       </td>
 
       <td className="text-center px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{book.price}</div>
+        <div className="text-lg text-gray-500">{book.price}</div>
       </td>
 
       <td className="text-center px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{book.date}</div>
+        <div className="text-lg text-gray-500">{book.date}</div>
       </td>
-      <td className="text-center px-6 py-4 whitespace-nowrap font-medium text-sm">
-        <a className="text-blue-700 hover:text-indigo-800 px-4 hover:cursor-pointer">
+      <td className="text-center px-6 py-4 whitespace-nowrap font-medium text-base space-x-4">
+        <button
+          onClick={(e) => editBook(e, book.id)}
+          className="rounded text-white font-semibold bg-blue-400
+            hover:bg-blue-700 px-6 py-2 shadow border-b-2"
+        >
           Edit
-        </a>
-        <a className="text-red-700 hover:text-indigo-800 hover:cursor-pointer">
+        </button>
+        <button
+          onClick={(e) => deleteBook(e, book.id)}
+          className="rounded text-white font-semibold bg-red-400
+            hover:bg-red-700 px-5 py-2 shadow border-b-2"
+        >
           Delete
-        </a>
+        </button>
       </td>
     </tr>
   );
